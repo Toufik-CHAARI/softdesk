@@ -22,4 +22,5 @@ urlpatterns = [
     path('api/getuserdata/', auth_views.getUserData, name='get_data'),
     path('api/user_detail/<int:user_id>/', auth_views.user_detail, name='user_detail'),
     
+    
 ]

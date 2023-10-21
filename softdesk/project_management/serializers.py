@@ -33,6 +33,11 @@ class IssueSerializer(serializers.ModelSerializer):
     
 
 class CommentSerializer(serializers.ModelSerializer):
+    issue = serializers.HyperlinkedRelatedField(
+        view_name='issue-detail', 
+        read_only=True  
+    )
+    
     class Meta:
         model = Comment
         fields = '__all__'
@@ -41,7 +46,7 @@ class CommentSerializer(serializers.ModelSerializer):
         if 'author' in validated_data and instance.author != validated_data['author']:
             raise serializers.ValidationError("The author of the comment cannot be changed.")
         
-        # For other fields, you can use the usual update logic
+        
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
