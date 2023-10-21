@@ -5,7 +5,7 @@ from project_management.models import Project, Contributor, Issue, Comment
 # Register your models here.
 
 class ProjectAdmin(admin.ModelAdmin): 
-    list_display = ("name", "description", "project_type","author")
+    list_display = ("name", "description", "project_type","author","id")
 
 admin.site.register(Project, ProjectAdmin)
 
@@ -15,7 +15,7 @@ class ContributorAdmin(admin.ModelAdmin):
 admin.site.register(Contributor, ContributorAdmin)
 
 class IssueAdmin(admin.ModelAdmin): 
-    list_display = ("name", "status","priority","author","project")
+    list_display = ("name", "status","priority","author","project","id")
 
 admin.site.register(Issue, IssueAdmin)
 
