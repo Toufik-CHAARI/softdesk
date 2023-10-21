@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Project, Contributor, Issue, Comment
+from authentication.models import User
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +19,8 @@ class ContributorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class IssueSerializer(serializers.ModelSerializer):
+    assignee = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+    
     def validate_project(self, value):
         if not Project.objects.filter(id=value.id).exists():
             raise serializers.ValidationError("The specified project does not exist.")

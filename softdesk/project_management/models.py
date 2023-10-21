@@ -43,6 +43,7 @@ class Issue(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='issues', on_delete=models.CASCADE)
+    assignee = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='assigned_issues')
 
 class Comment(models.Model):
     description = models.TextField()

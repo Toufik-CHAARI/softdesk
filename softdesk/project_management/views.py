@@ -9,6 +9,7 @@ from django.db.models import Q
 from authentication.models import User
 from rest_framework.exceptions import PermissionDenied
 from django.core.exceptions import ValidationError
+from rest_framework import serializers
 
 class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,IsOwner,IsProjectContributorOrAuthorOrSuperuser]
@@ -34,24 +35,49 @@ class ContributorViewSet(viewsets.ModelViewSet):
     queryset = Contributor.objects.all()
     serializer_class = ContributorSerializer
     
-
+from rest_framework import serializers
 
 class IssueViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,IsProjectContributorOrAuthorOrSuperuser]
+    permission_classes = [IsAuthenticated, IsProjectContributorOrAuthorOrSuperuser]
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
     def create(self, request, *args, **kwargs):
         project_id = request.data.get('project')
         if not Project.objects.filter(id=project_id).exists():
             return Response({"detail": "The specified project does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # If there's an assignee provided during creation
+        assignee_id = request.data.get('assignee')
+        if assignee_id:
+            project = Project.objects.get(id=project_id)
+            if not project.author.id == int(assignee_id) and not Contributor.objects.filter(user_id=assignee_id, project=project).exists():
+                return Response({"detail": "The assignee must be a contributor or the author of the project."}, status=status.HTTP_400_BAD_REQUEST)
+        
         return super(IssueViewSet, self).create(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        # If there's an assignee provided during update
+        assignee = serializer.validated_data.get('assignee', None)
+        if assignee:
+            project = self.get_object().project
+            if not project.author.id == assignee.id and not Contributor.objects.filter(user=assignee, project=project).exists():
+                raise serializers.ValidationError({"assignee": "The assignee must be a contributor or the author of the project."})
+
+        serializer.save()
+
     def get_queryset(self):
         # Get projects where the user is a contributor or author
         user_projects = Project.objects.filter(Q(author=self.request.user) | Q(contributor__user=self.request.user)).distinct()
         # Return issues only from those projects
-        return Issue.objects.filter(project__in=user_projects) 
+        return Issue.objects.filter(project__in=user_projects)
+
+
+
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,IsOwner,IsProjectContributorOrAuthorOrSuperuser]
