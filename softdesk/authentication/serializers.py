@@ -4,7 +4,8 @@ from authentication.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-
+    can_be_contacted = serializers.BooleanField(required=True)
+    can_data_be_shared = serializers.BooleanField(required=True)
     class Meta:
         model = User
         fields = [
@@ -17,13 +18,35 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
         ]
-
+    
     def validate_age(self, value):
         if value < 15:
             raise serializers.ValidationError(
                 "Users must be 15 years or older."
             )
         return value
+    
+    def validate_can_be_contacted(self, value):        
+        if value is None:            
+            raise serializers.ValidationError(
+                "The can_be_contacted field must be provided."
+            )
+        return value
+
+    def validate_can_data_be_shared(self, value):
+        if value is None:
+            raise serializers.ValidationError(
+                "The can_data_be_shared field must be provided."
+            )
+        return value
+
+    def validate(self, data):
+        # If either 'can_be_contacted' or 'can_data_be_shared' is True, 
+        # then 'consent_choice' is automatically set to True.
+        if data.get('can_be_contacted') or data.get('can_data_be_shared'):
+            data['consent_choice'] = True
+        return data
+    
 
     def create(self, validated_data):
         user = User(

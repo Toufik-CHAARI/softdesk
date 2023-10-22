@@ -63,12 +63,14 @@ def user_detail(request, user_id=None):
 
 @api_view(["POST"])
 def register(request):
+    print(request.data)
     if request.method == "POST":
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             if user:
                 return Response(status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(
             serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )

@@ -3,6 +3,6 @@ from django.db import models
 
 class User(AbstractUser):
     age = models.PositiveIntegerField()
-    consent_choice = models.BooleanField()
+    consent_choice = models.BooleanField(default=False)
     can_be_contacted = models.BooleanField(default=False)
     can_data_be_shared = models.BooleanField(default=False)
