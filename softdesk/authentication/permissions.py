@@ -1,8 +1,10 @@
 from rest_framework import permissions
 
+
 class IsSuperuserOrSelf(permissions.BasePermission):
     """
-    Custom permission to only allow superusers to edit/delete any user and normal users to edit/delete themselves.
+    Custom permission to only allow superusers to edit/delete
+    any user and normal users to edit/delete themselves.
     """
 
     def has_object_permission(self, request, view, obj):

@@ -35,6 +35,16 @@ class IsProjectContributorOrAuthorOrSuperuser(permissions.BasePermission):
                 return True
             return Contributor.objects.filter(user=request.user, project=obj).exists()
         
+        # Logic specific to Contributor
+        if isinstance(obj, Contributor):
+            related_project = obj.project
+            if related_project.author == request.user:
+                return True
+            # Check if the user is an existing contributor of the related project
+            return Contributor.objects.filter(user=request.user, project=related_project).exists()
+        
+        
+        
         # For other objects (like Comments), check the related project's contributors and author
         project_related = obj.project if hasattr(obj, 'project') else obj.issue.project
         if project_related.author == request.user:
