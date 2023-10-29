@@ -7,6 +7,9 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
+black = "*"
+pep8 = "*"
+flake8 = "*"
 
 [dev-packages]
 
