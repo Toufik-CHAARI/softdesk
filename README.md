@@ -214,3 +214,25 @@ issue (issue_id)
 ***
 
 ## PEP8 Code compliance Report
+
+In order to generate the reports please run the following commands
+
+#### Authentication App
+
+- flake8 --format=html --htmldir=flake-report_authentication_admin authentication/admin.py
+- flake8 --format=html --htmldir=flake-report_authentication_models authentication/models.py
+- flake8 --format=html --htmldir=flake-report_authentication_permissions authentication/permissions.py
+- flake8 --format=html --htmldir=flake-report_authentication_serializers authentication/serializers.py
+- flake8 --format=html --htmldir=flake-report_authentication_urls authentication/urls.py
+- flake8 --format=html --htmldir=flake-report_authentication_views authentication/views.py
+
+#### Project Management App
+
+- flake8 --format=html --htmldir=flake-report_project_management_admin project_management/admin.py
+- flake8 --format=html --htmldir=flake-report_project_management_models project_management/models.py
+- flake8 --format=html --htmldir=flake-report_project_management_permissions project_management/permissions.py
+- flake8 --format=html --htmldir=flake-report_project_management_serializers project_management/serializers.py
+- flake8 --format=html --htmldir=flake-report_project_management_urls project_management/urls.py
+- flake8 --format=html --htmldir=flake-report_project_management_views project_management/views.py
+
+***
