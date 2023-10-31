@@ -15,7 +15,8 @@ class Project(models.Model):
     project_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     created_time = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    def __str__(self):
+        return self.name
 
 class Contributor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -51,7 +52,8 @@ class Issue(models.Model):
         on_delete=models.SET_NULL,
         related_name="assigned_issues",
     )
-
+    def __str__(self):
+        return self.name
 
 class Comment(models.Model):
     description = models.TextField()
